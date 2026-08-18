@@ -1,0 +1,1455 @@
+<title>Michigan Senate Ads On Air</title>
+<style>
+:root{
+  color-scheme:light;
+  --ground:#f4f6f8; --surface:#fff; --surface-sunk:#eceff3;
+  --line:#dbe0e7; --line-soft:#e7ebf0;
+  --ink:#10151c; --ink-2:#4a5563; --ink-3:#78838f;
+  --dem:#2a78d6; --rep:#d03b3b; --unk:#98a2ae; --new:#0ca30c; --warn:#c2711a;
+  --plotH:290px; --labH:70px; --labHrot:190px;
+}
+@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){
+  color-scheme:dark;
+  --ground:#101317; --surface:#191d23; --surface-sunk:#22272e;
+  --line:#2e353e; --line-soft:#262c34;
+  --ink:#eef2f6; --ink-2:#a9b4c0; --ink-3:#7c8794;
+  --dem:#4a90e8; --rep:#e05a5a; --unk:#7c8794; --new:#33bb33; --warn:#e0973c;
+}}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);margin:0;padding:0 16px 64px;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1020px;margin:0 auto}
+.num{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-variant-numeric:tabular-nums}
+
+header{padding:26px 0 16px;border-bottom:2px solid var(--ink)}
+.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 8px}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.06;margin:0 0 10px;letter-spacing:-.025em;font-weight:700}
+.standfirst{margin:0;color:var(--ink-2);max-width:68ch;font-size:15px}
+.standfirst a{font-weight:600}
+.scopebar{margin:14px 0 0;padding:9px 12px;background:var(--surface);border:1px solid var(--line);
+  border-left:3px solid var(--dem);font-size:13px;color:var(--ink-2)}
+.scopebar b{color:var(--ink)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:20px 0 6px}
+.stat{background:var(--surface);padding:12px 14px}
+.stat dt{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 4px}
+.stat dd{margin:0;font-size:22px;font-weight:650;letter-spacing:-.02em}
+.stat .sub{display:block;font-size:12px;color:var(--ink-3);font-weight:400;letter-spacing:0;margin-top:2px}
+
+section{margin:0 0 32px}
+h2{font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;margin:32px 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+h2 .tag{float:right;font-weight:600;letter-spacing:.04em;color:var(--ink-3);text-transform:none}
+.lede{color:var(--ink-2);margin:12px 0 16px;max-width:76ch;font-size:14px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin:0 0 14px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:11px;height:11px;border-radius:2px;flex:none}
+.swatch.ctv{opacity:.45;outline:1px solid currentColor;outline-offset:-1px}
+.lkey{font:inherit;font-size:12.5px;color:var(--ink-2);background:none;border:1px solid transparent;
+  border-radius:999px;padding:3px 9px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.lkey:hover{border-color:var(--line);background:var(--surface)}
+.lkey.on{border-color:var(--ink-3);background:var(--surface);color:var(--ink);font-weight:650}
+.lkey:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
+.filtercount{font-size:12px;color:var(--ink-3);margin-left:4px}
+.vbar[hidden]{display:none}
+.empty{font-size:13.5px;color:var(--ink-3);font-style:italic}
+
+/* ---------- vertical bar chart ---------- */
+.cwrap{display:grid;grid-template-columns:58px 1fr}
+.ygut{position:relative;height:var(--plotH)}
+.ytick{position:absolute;right:9px;transform:translateY(-50%);font-size:10px;color:var(--ink-3);white-space:nowrap}
+.plotbox{position:relative}
+.gls{position:absolute;left:0;right:0;top:0;height:var(--plotH);pointer-events:none}
+.gl{position:absolute;left:0;right:0;border-top:1px solid var(--line-soft)}
+.gl.base{border-top-color:var(--ink-3)}
+.vchart{position:relative;display:flex;align-items:flex-end;gap:3px}
+.vbar{flex:1 1 0;min-width:0;display:flex;flex-direction:column;text-decoration:none;color:inherit;border-radius:3px}
+a.vbar:hover{background:var(--surface-sunk)}
+.vplot{height:var(--plotH);display:flex;flex-direction:column;justify-content:flex-end;gap:1px}
+.vseg{display:block;width:100%;min-height:2px}
+.vseg.D{background:var(--dem)} .vseg.R{background:var(--rep)} .vseg.U{background:var(--unk)}
+/* CTV money is drawn as the same hue at reduced opacity with an outline. NOT a gradient:
+   a CSS gradient cannot be a PDF vector and gets rasterised into an embedded bitmap,
+   which tripled the PDF's size the first time round. */
+.vseg.ctv{opacity:.45;outline:1px solid currentColor;outline-offset:-1px}
+.vseg.top{border-radius:3px 3px 0 0}
+.vnew{display:block;height:4px;margin-top:2px;background:transparent}
+.vbar.isnew .vnew{background:var(--new)}
+.vlab{height:var(--labHrot);writing-mode:vertical-rl;text-orientation:sideways;transform:rotate(180deg);
+  font-size:10px;line-height:1.15;padding-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2)}
+.vlab.flat{height:var(--labH);writing-mode:horizontal-tb;transform:none;text-align:center;white-space:normal;
+  word-break:break-word;padding-top:7px;font-size:10.5px}
+.vlab b{font-weight:650;color:var(--ink)}
+.vlab.flat b{display:block}
+.vlab .m{color:var(--ink-3);font-family:ui-monospace,Menlo,monospace}
+
+footer{border-top:1px solid var(--line);padding-top:14px;margin-top:30px;color:var(--ink-3);font-size:12px}
+footer p{margin:0 0 6px;max-width:82ch}
+
+@media (max-width:700px){
+  :root{--plotH:220px;--labH:80px;--labHrot:150px}
+  body{padding:0 12px 56px}
+  .vlab{font-size:9px}
+  h2 .tag{float:none;display:block;margin-top:4px}
+}
+
+.abar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line);
+  margin:0 -16px 0;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.abar .brand{font-size:12.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);margin-right:auto}
+.abar .brand span{color:var(--ink-3);font-weight:600;text-transform:none;letter-spacing:0}
+.daynav{display:flex;align-items:center;gap:6px}
+.daynav button,.actions button{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--surface-sunk);
+  border:1px solid var(--line);border-radius:4px;padding:6px 10px;cursor:pointer;line-height:1.1}
+.daynav button:hover,.actions button:hover{border-color:var(--ink-3)}
+.daynav button[disabled]{opacity:.4;cursor:default}
+.daynav button:focus-visible,.actions button:focus-visible,#daypick:focus-visible{outline:2px solid var(--dem);outline-offset:2px}
+#daypick{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);border-radius:4px;padding:6px 8px;max-width:58vw}
+.actions{display:flex;gap:6px}
+.actions button.primary{background:var(--dem);border-color:var(--dem);color:#fff}
+.actions button.primary:hover{filter:brightness(1.08)}
+.pdfnote{width:100%;margin:0;font-size:12px;color:var(--ink-3)}
+.status{width:100%;margin:2px 0 0;padding:9px 12px;font-size:13.5px;font-weight:600;border-radius:4px;
+  background:var(--surface-sunk);border:1px solid var(--line);border-left:3px solid var(--dem);color:var(--ink)}
+.status.bad{border-left-color:var(--warn)}
+.status.good{border-left-color:var(--new)}
+.status .why{display:block;font-weight:400;font-size:12.5px;color:var(--ink-3);margin-top:3px}
+.statusbtn{font:inherit;font-size:12.5px;font-weight:600;margin-top:8px;padding:5px 10px;cursor:pointer;
+  color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px}
+.statusbtn:hover{border-color:var(--ink-3)}
+.statusbtn[disabled]{opacity:.5;cursor:default}
+.archnote{margin:16px 0 0;font-size:12.5px;color:var(--ink-3)}
+@media (max-width:700px){
+  .abar{margin:0 -12px;padding:9px 12px}
+  .abar .brand{width:100%;margin-right:0}
+}
+
+@page{size:letter portrait;margin:0.5in}
+@media print{
+  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){
+    --ground:#fff; --surface:#fff; --surface-sunk:#f0f2f5;
+    --line:#c9d0d8; --line-soft:#e2e6eb;
+    --ink:#12171e; --ink-2:#3d4650; --ink-3:#5f6a75;
+    --dem:#1f63b8; --rep:#b52f2f; --unk:#7d868f; --new:#0a7d0a; --warn:#9a5510;
+    --plotH:250px; --labH:64px; --labHrot:160px;
+  }
+  body{background:#fff;padding:0;font-size:10.5pt}
+  .wrap{max-width:none}
+  a{text-decoration:none}
+
+  /* Browsers print backgrounds only if the reader ticks "Background graphics", which is
+     OFF by default &#8212; so a bar chart whose bars ARE backgrounds prints blank. Chrome's own
+     --print-to-pdf ignores that checkbox, which is why a generated file looked right while
+     a hand-printed one lost every colour. Force it. */
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+
+  .abar,.actions,.daynav,.noprint{display:none !important}
+  .day[hidden]{display:none !important}
+
+  .stats,.stat,.cwrap,.legend,.scopebar,.adrow,.card,.warnbox,details.more,footer,header{break-inside:avoid}
+  p,li,dt,dd,figcaption{break-inside:avoid;orphans:3;widows:3}
+  h1,h2,h3,.lede,.legend{break-after:avoid}
+  section.keep{break-inside:avoid}
+  section,.adlist,ul,ol{break-inside:auto}
+
+  details.more summary{list-style:none}
+  details.more summary::-webkit-details-marker{display:none}
+
+  /* one family, two weights &#8212; every extra face is another embedded font subset */
+  body,body *{font-family:Helvetica,Arial,sans-serif !important;font-weight:400}
+  b,strong,h1,h2,h3,dt,summary,.adname,.adamt,.stat dd,.vlab b{font-weight:700}
+  .num,.stamp,.vlab .m,code{font-family:Helvetica,Arial,sans-serif !important}
+}
+</style>
+<div class="wrap">
+
+<div class="abar noprint">
+  <div class="brand">On the air <span>&#183; MI Senate 2026</span></div>
+  <div class="daynav">
+    <button id="prev" type="button" title="Older report" aria-label="Older report">&lsaquo;</button>
+    <select id="daypick" aria-label="Choose a report date"><option value="2026-08-18" selected>Tuesday, August 18, 2026</option></select>
+    <button id="next" type="button" title="Newer report" aria-label="Newer report">&rsaquo;</button>
+  </div>
+  <div class="actions">
+    <button id="printbtn" class="primary" type="button">Save as PDF</button>
+  </div>
+  <p class="pdfnote">1 report on file, back to Tuesday, August 18, 2026. Choose "Save as PDF" as the destination; the day you are viewing is what prints.</p>
+  <p class="status" id="status" hidden></p>
+</div>
+
+<article class="day" data-date="2026-08-18"><style>
+.adlist{background:var(--surface);border:1px solid var(--line);padding:10px 14px;display:flex;flex-direction:column;gap:12px}
+.adrow{display:block;text-decoration:none;color:inherit;padding-bottom:11px;border-bottom:1px solid var(--line-soft)}
+.adlist .adrow:last-child{border-bottom:none;padding-bottom:0}
+.adrow:hover .adname{color:var(--dem)}
+.adtop{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.adname{font-size:14.5px;font-weight:650;color:var(--ink)}
+.adv{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.adv.D{color:var(--dem)} .adv.R{color:var(--rep)}
+.adamt{margin-left:auto;font-size:14.5px;font-weight:700}
+.admeta{display:block;font-size:12px;color:var(--ink-2);margin-top:3px}
+.mkline{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.badge{display:inline-block;margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.06em;
+  border-radius:2px;padding:0 4px;vertical-align:1px;text-transform:uppercase}
+.badge.new{color:var(--new);border:1px solid var(--new)}
+.badge.att{color:var(--rep);border:1px solid var(--rep)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--new);
+  padding:13px 16px;margin:0 0 10px}
+.card.token{border-left-color:var(--ink-3)}
+.card.modest{border-left-color:var(--warn)}
+.card h3{margin:0 0 3px;font-size:16px;font-weight:700}
+.card h3 a{color:inherit;text-decoration:none;border-bottom:1.5px solid var(--dem)}
+.card .verdict{font-size:13.5px;color:var(--ink-2);margin:6px 0 0}
+.card .verdict b{color:var(--ink)}
+.card .sub{font-size:12.5px;color:var(--ink-3);margin:2px 0 0}
+
+.mktable{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line)}
+.mktable th,.mktable td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line-soft)}
+.mktable th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.mktable td.n,.mktable th.n{text-align:right;font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.mktable tr:last-child td{border-bottom:none}
+.warnbox{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--warn);
+  padding:12px 15px;margin:0 0 16px;font-size:13.5px}
+.warnbox p{margin:0 0 6px;color:var(--ink-2);max-width:82ch}
+.warnbox p:last-child{margin-bottom:0}
+.warnbox b{color:var(--ink)}
+</style><header>
+  <p class="eyebrow">Michigan U.S. Senate &middot; Tuesday, August 18, 2026</p>
+  <h1>What&rsquo;s on the air</h1>
+  <p class="standfirst">Every ad detected on broadcast or CTV in the window, sized by the money behind it. <strong>Click any bar or title to play the ad.</strong></p>
+  <p class="scopebar"><b>Window: 8/12&#8211;8/18.</b> Broadcast and CTV are separate, disjoint buckets and are shown separately; digital dollars are never mixed in. CTV reports about a day behind broadcast, so the newest CTV figures run slightly light.</p>
+</header>
+
+<dl class="stats">
+    <div class="stat"><dt>Ads on air</dt><dd class="num">69<span class="sub">8/12&#8211;8/18</span></dd></div>
+    <div class="stat"><dt>Spend behind them</dt><dd class="num">$3.90M<span class="sub">$2.67M broadcast &middot; $1.23M CTV</span></dd></div>
+    <div class="stat"><dt>New ads</dt><dd class="num" style="color:var(--new)">1<span class="sub">first aired in the last 2 days</span></dd></div>
+    <div class="stat"><dt>Democratic side</dt><dd class="num" style="color:var(--dem)">$898K<span class="sub">23% of the money</span></dd></div>
+    <div class="stat"><dt>Republican side</dt><dd class="num" style="color:var(--rep)">$2.61M<span class="sub">67% of the money</span></dd></div>
+    <div class="stat"><dt>Independent-registered</dt><dd class="num" style="color:var(--unk)">$390K<span class="sub">10% &middot; 5 advertisers</span></dd></div>
+  </dl>
+  <p class="lede" style="margin-top:10px">AdMo tags <b>advertiser party</b>, which is who the advertiser registers as &mdash; not which candidate an ad helps. 5 advertisers are registered Independent and are counted separately rather than assigned a side: AFSCME Working Families Fund, Center Forward Committee, EDF Action Votes, Fighting for Michigan, United Democracy Project. Read the ad to see who it is actually for.</p>
+
+<section class="keep">
+  <h2>New ads &mdash; is there money behind them? <span class="tag">1 in the last 2 days</span></h2>
+  <p class="lede">A launch only matters if it is funded. Each new ad below carries its actual spend so far, so a token placement never reads like a real buy.</p>
+  <div class="card modest">
+        <h3><a href="https://pdfweb.s3.amazonaws.com/videos/47209b07-0d42-4f85-bbc2-56ffe1047bd7.mp4" target="_blank" rel="noopener">&ldquo;Michigan Values&rdquo;</a></h3>
+        <p class="sub">NRSC/Rogers &middot; Republican &middot; first aired 8/18</p>
+        <p class="verdict"><b>$45K</b> behind it so far &mdash; a modest buy. $45K broadcast, $0 CTV, 71 airings; broadcast only.</p>
+        <p class="sub">Airing in Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI, Traverse City-Cadillac, MI</p>
+      </div>
+</section>
+
+<section class="keep">
+  <h2>Everything on air <span class="tag">69 ads &middot; $3.90M</span></h2>
+  <p class="lede">Bar height is total spend behind the ad. The solid block is broadcast; the lighter outlined block on top is CTV. Colour is the advertiser&rsquo;s side, and a green tick marks an ad that launched in the last 2 days. <b>Tap a key below to show only those ads</b> &mdash; the scale resizes to what is left, so the small buys stay readable. Tap it again to clear.</p>
+  <div class="legend">
+    <button type="button" class="lkey" data-filter="D" aria-pressed="false"><i class="swatch" style="background:var(--dem)"></i> Democratic</button>
+    <button type="button" class="lkey" data-filter="R" aria-pressed="false"><i class="swatch" style="background:var(--rep)"></i> Republican</button>
+    <button type="button" class="lkey" data-filter="U" aria-pressed="false"><i class="swatch" style="background:var(--unk)"></i> Independent</button>
+    <button type="button" class="lkey" data-filter="bcast" aria-pressed="false"><i class="swatch" style="background:var(--ink-3)"></i> Broadcast</button>
+    <button type="button" class="lkey" data-filter="ctv" aria-pressed="false"><i class="swatch ctv" style="background:var(--ink-3)"></i> CTV</button>
+    <button type="button" class="lkey" data-filter="new" aria-pressed="false"><i class="swatch" style="background:var(--new)"></i> New ad</button>
+    <span class="filtercount"></span>
+  </div>
+  <div class="cwrap"><div class="ygut"><span class="ytick" style="top:100%">0</span><span class="ytick" style="top:75%">$398K</span><span class="ytick" style="top:50%">$796K</span><span class="ytick" style="top:25%">$1.19M</span><span class="ytick" style="top:0%">$1.59M</span></div>
+    <div class="plotbox"><div class="gls"><span class="gl base" style="top:100%"></span><span class="gl" style="top:75%"></span><span class="gl" style="top:50%"></span><span class="gl" style="top:25%"></span><span class="gl" style="top:0%"></span></div><div class="vchart"><a class="vbar" data-side="R" data-b="1198589" data-c="393759" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/180b3740-ebe5-49c4-af9f-da0f738acc50.mp4" target="_blank" rel="noopener" title="Dangerously Radical &#8212; SLF PAC &#8212; $1,592,348 ($1,198,589 broadcast + $393,759 CTV) &#8212; 594 airings &#8212; Republican &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:24.72820011705984%"></span><span class="vseg R" style="height:75.27179988294016%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Dangerously Radical</b> <span class="m">$1.59M</span></span>
+    </a><a class="vbar" data-side="D" data-b="558513" data-c="6883" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/05cbcc80-65d0-46cc-abba-a1a196a67976.mp4" target="_blank" rel="noopener" title="Grandparent Endorsed &#8212; El-Sayed for MI Senate &#8212; $565,396 ($558,513 broadcast + $6,883 CTV) &#8212; 936 airings &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.4322547583819617%"></span><span class="vseg D" style="height:35.07480776815118%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Grandparent Endorsed</b> <span class="m">$565K</span></span>
+    </a><a class="vbar" data-side="R" data-b="378299" data-c="29075" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/2dc6d510-0eaa-4511-863d-253d5d5d5a3a.mp4" target="_blank" rel="noopener" title="Homegrown Communists &#8212; GLCF &#8212; $407,374 ($378,299 broadcast + $29,075 CTV) &#8212; 645 airings &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:1.8259199622193139%"></span><span class="vseg R" style="height:23.75730681986601%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Homegrown Communists</b> <span class="m">$407K</span></span>
+    </a><a class="vbar" data-side="R" data-b="402234" data-c="2512" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/acb951a1-f8bf-404d-b6d2-32d66a7c4b55.mp4" target="_blank" rel="noopener" title="Builders &#8212; Rogers for MI Senate &#8212; $404,746 ($402,234 broadcast + $2,512 CTV) &#8212; 319 airings &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.15775446070833762%"></span><span class="vseg R" style="height:25.260433020922562%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Builders</b> <span class="m">$405K</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="201822" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/7b4a27b4-676a-4e16-bd19-298bddbce116.mp4" target="_blank" rel="noopener" title="Fine &#8212; AFSCME Working Families Fund &#8212; $201,822 ($0 broadcast + $201,822 CTV) &#8212; Unaffiliated &#8212; attacks Rogers &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:12.674490752021544%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Fine</b> <span class="m">$202K</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="167008" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/18544e83-2e5f-45dd-a87e-9feab23b1d40.mp4" target="_blank" rel="noopener" title="Grandparents &#8212; El-Sayed for MI Senate &#8212; $167,008 ($0 broadcast + $167,008 CTV) &#8212; 5 airings &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:10.488159623398905%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Grandparents</b> <span class="m">$167K</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="154014" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/3a984da5-3c16-4050-8515-94a6df998361.mp4" target="_blank" rel="noopener" title="Can't Afford &#8212; EDF Action Votes &#8212; $154,014 ($0 broadcast + $154,014 CTV) &#8212; Unaffiliated &#8212; attacks Rogers &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:9.672131971152034%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Can't Afford</b> <span class="m">$154K</span></span>
+    </a><a class="vbar" data-side="D" data-b="86296" data-c="13577" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/42268d85-81f7-43a5-8e1c-8afc584c8b55.mp4" target="_blank" rel="noopener" title="Glasses Off &#8212; El-Sayed for MI Senate &#8212; $99,873 ($86,296 broadcast + $13,577 CTV) &#8212; 173 airings &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.852640252005215%"></span><span class="vseg D" style="height:5.4194183683466175%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Glasses Off</b> <span class="m">$100K</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="70711" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/1019aa9b-e7bd-4077-af3f-ec47bb014034.mp4" target="_blank" rel="noopener" title="Workhorse &#8212; Americans for Prosperity Action &#8212; $70,711 ($0 broadcast + $70,711 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:4.440675028322954%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Workhorse</b> <span class="m">$71K</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="64520" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/53b34f29-c3ce-43fb-9589-11bc0bb2fb6a.mp4" target="_blank" rel="noopener" title="Backtracking &#8212; Planned Parenthood Votes &#8212; $64,520 ($0 broadcast + $64,520 CTV) &#8212; Democratic &#8212; attacks Rogers &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:4.051878107046952%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Backtracking</b> <span class="m">$65K</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="57579" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/72b0f17b-72f1-45b5-a605-761c9dcf57c5.mp4" target="_blank" rel="noopener" title="Builders - NRSC &#8212; NRSC/Rogers &#8212; $57,579 ($0 broadcast + $57,579 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:3.6159809287919473%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Builders - NRSC</b> <span class="m">$58K</span></span>
+    </a><a class="vbar isnew" data-side="R" data-b="44624" data-c="0" data-new="1" href="https://pdfweb.s3.amazonaws.com/videos/47209b07-0d42-4f85-bbc2-56ffe1047bd7.mp4" target="_blank" rel="noopener" title="Michigan Values &#8212; NRSC/Rogers &#8212; $44,624 ($44,624 broadcast + $0 CTV) &#8212; 71 airings &#8212; Republican &#8212; NEW &#8212; click to play">
+      <span class="vplot"><span class="vseg R top" style="height:2.802402489907985%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Michigan Values</b> <span class="m">$45K</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="27747" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/a9dbd881-5018-42c9-baa6-95ace14234d5.mp4" target="_blank" rel="noopener" title="Workhorse :15 &#8212; Americans for Prosperity Action &#8212; $27,747 ($0 broadcast + $27,747 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:1.7425211071951607%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Workhorse :15</b> <span class="m">$28K</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="26449" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/01cd1160-b0cd-4eb6-8d1e-a22c0b30402a.mp4" target="_blank" rel="noopener" title="Supports Trump's Iran War &#8212; EDF Action Votes &#8212; $26,449 ($0 broadcast + $26,449 CTV) &#8212; Unaffiliated &#8212; attacks Rogers &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:1.6610062624501678%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Supports Trump's Iran War</b> <span class="m">$26K</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="6741" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/0010f150-3f00-499b-9375-6b9ff76611f0.mp4" target="_blank" rel="noopener" title="Against Lowering Prescription Prices &#8212; EDF Action Votes &#8212; $6,741 ($0 broadcast + $6,741 CTV) &#8212; Unaffiliated &#8212; attacks Rogers &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.4233371097272707%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Against Lowering Prescription Prices</b> <span class="m">$7K</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="1724" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/0620a135-8501-4823-bfb0-a30ffbf06c79.mp4" target="_blank" rel="noopener" title="More Opportunity :15 &#8212; Libre Action &#8212; $1,724 ($0 broadcast + $1,724 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.1082677907090661%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>More Opportunity :15</b> <span class="m">$2K</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="1519" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/13757d76-c675-448a-88a0-6713a51cad10.mp4" target="_blank" rel="noopener" title="Trades &#8212; Rogers for MI Senate &#8212; $1,519 ($0 broadcast + $1,519 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.09539372046813888%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Trades</b> <span class="m">$2K</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="332" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/50549630-89e6-4cfe-932c-c4ba236d3ecf.mp4" target="_blank" rel="noopener" title="Middleclass :60 &#8212; Rogers for MI Senate &#8212; $332 ($0 broadcast + $332 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.02084971375603825%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Middleclass :60</b> <span class="m">$332</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="316" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/a50800a4-2326-4d15-a08d-4794fd14d0bf.mp4" target="_blank" rel="noopener" title="More Opportunity &#8212; Libre Action &#8212; $316 ($0 broadcast + $316 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.01984490827381954%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>More Opportunity</b> <span class="m">$316</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="258" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/f05781c0-9c9d-4cbe-a984-b79a476fb5ce.mp4" target="_blank" rel="noopener" title="Standing Up &#8212; McMorrow for MI Senate &#8212; $258 ($0 broadcast + $258 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.016202488400776715%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Standing Up</b> <span class="m">$258</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="236" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/93f46cdf-3450-4631-ac46-1ed68e7f17dc.mp4" target="_blank" rel="noopener" title="Keep Fighting Back &#8212; Yes MI Action Committee &#8212; $236 ($0 broadcast + $236 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.014820880862725986%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Keep Fighting Back</b> <span class="m">$236</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="194" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/de004ea9-e2fb-4300-af13-22bde9dc0ca2.mp4" target="_blank" rel="noopener" title="Michigan Families Can&#8217;t Afford This Tax Hike &#8211; Protect Prosperity Now &#8212; Americans for Prosperity &#8212; $194 ($0 broadcast + $194 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.01218326647190187%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Michigan Families Can&#8217;t Afford This Tax Hike &#8211; Protect Prosperity Now</b> <span class="m">$194</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="190" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/78f14007-2611-4779-9baf-f64a2bd2de45.mp4" target="_blank" rel="noopener" title="A Dangerous Choice &#8212; United Democracy Project &#8212; $190 ($0 broadcast + $190 CTV) &#8212; Unaffiliated &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.011932065101347193%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>A Dangerous Choice</b> <span class="m">$190</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="186" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/1e9e8549-d6ad-4cd3-957b-d9c4e831fac1.mp4" target="_blank" rel="noopener" title="Michigan Made &#8212; Stevens for MI Senate &#8212; $186 ($0 broadcast + $186 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.011680863730792515%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Michigan Made</b> <span class="m">$186</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="174" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/d52ba581-823d-4e40-af77-e63fbc28b937.mp4" target="_blank" rel="noopener" title="Michigan&#8217;s Future &#8212; GLCF &#8212; $174 ($0 broadcast + $174 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.010927259619128483%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Michigan&#8217;s Future</b> <span class="m">$174</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="141" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/62c6c2a3-ef19-41e6-bd23-be28b488119e.mp4" target="_blank" rel="noopener" title="Too Radical &#8212; NRSC &#8212; $141 ($0 broadcast + $141 CTV) &#8212; Republican &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.00885484831205239%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Too Radical</b> <span class="m">$141</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="139" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/3c71ec3f-8cf2-4b74-9774-d4c4f81d0ca6.mp4" target="_blank" rel="noopener" title="Fights Power &#8212; Unite to Win &#8212; $139 ($0 broadcast + $139 CTV) &#8212; Democratic &#8212; attacks Stevens &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.008729247626775051%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Fights Power</b> <span class="m">$139</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="130" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/99ee51c0-7f76-493a-a4fe-5e8604f161c4.mp4" target="_blank" rel="noopener" title="Sexist Attacks &#8212; United Democracy Project &#8212; $130 ($0 broadcast + $130 CTV) &#8212; Unaffiliated &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.008164044543027027%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Sexist Attacks</b> <span class="m">$130</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="117" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/5cb4411b-541b-4669-822c-a3cd702a70fa.mp4" target="_blank" rel="noopener" title="Stop &#8212; Stevens for MI Senate &#8212; $117 ($0 broadcast + $117 CTV) &#8212; Democratic &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.007347640088724324%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Stop</b> <span class="m">$117</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="85" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/3a42a57e-e9df-493b-9e14-2444df9fac1b.mp4" target="_blank" rel="noopener" title="Attacks And Lies &#8212; El-Sayed for MI Senate &#8212; $85 ($0 broadcast + $85 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.005338029124286902%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Attacks And Lies</b> <span class="m">$85</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="80" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/10d35a1e-8938-4579-bd33-948bb8ba4071.mp4" target="_blank" rel="noopener" title="A Proven Fighter &#8212; Fight for Michigan &#8212; $80 ($0 broadcast + $80 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0050240274110935545%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>A Proven Fighter</b> <span class="m">$80</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="76" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/157caec2-5ede-4902-883f-668ded02a81b.mp4" target="_blank" rel="noopener" title="Built In Michigan &#8212; GLCF &#8212; $76 ($0 broadcast + $76 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.004772826040538878%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Built In Michigan</b> <span class="m">$76</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="73" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/61cfa876-8dd5-4ee2-bd52-b2a0d8cd5744.mp4" target="_blank" rel="noopener" title="Do The Work &#8212; First Principles Digital &#8212; $73 ($0 broadcast + $73 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.0045844250126228685%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Do The Work</b> <span class="m">$73</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="67" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/8a599dbd-dea3-41b7-ae60-35adaba97262.mp4" target="_blank" rel="noopener" title="Martha G. Scott &#8212; El-Sayed for MI Senate &#8212; $67 ($0 broadcast + $67 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0042076229567908525%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Martha G. Scott</b> <span class="m">$67</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="61" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/81379a6a-0b6b-47bd-b4f1-09c5cfda403a.mp4" target="_blank" rel="noopener" title="Cool Kids &#8212; Stevens for MI Senate &#8212; $61 ($0 broadcast + $61 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0038308209009588357%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Cool Kids</b> <span class="m">$61</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="61" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/d9ba5d2e-db78-4493-a292-572a1d0042ce.mp4" target="_blank" rel="noopener" title="Son Of Michigan &#8212; El-Sayed for MI Senate &#8212; $61 ($0 broadcast + $61 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0038308209009588357%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Son Of Michigan</b> <span class="m">$61</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="58" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/a68d809e-17ee-4fd3-8f7e-c1baee996020.mp4" target="_blank" rel="noopener" title="Middleclass &#8212; Rogers for MI Senate &#8212; $58 ($0 broadcast + $58 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.0036424198730428273%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Middleclass</b> <span class="m">$58</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="56" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/b6013db4-7a00-401b-ac9e-16b163189cb3.mp4" target="_blank" rel="noopener" title="Obama's Team &#8212; United Democracy Project &#8212; $56 ($0 broadcast + $56 CTV) &#8212; Unaffiliated &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.0035168191877654885%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Obama's Team</b> <span class="m">$56</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="54" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/44664d84-5e2d-4393-bfc4-51880d740126.mp4" target="_blank" rel="noopener" title="Stands Out &#8212; Fight for Michigan &#8212; $54 ($0 broadcast + $54 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0033912185024881493%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Stands Out</b> <span class="m">$54</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="52" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/588044f5-830d-4710-ba55-d810afba812e.mp4" target="_blank" rel="noopener" title="Can't Win &#8212; United Democracy Project &#8212; $52 ($0 broadcast + $52 CTV) &#8212; Unaffiliated &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.003265617817210811%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Can't Win</b> <span class="m">$52</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="48" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/4386555b-2037-4fe2-9d3f-fbabc0323795.mp4" target="_blank" rel="noopener" title="Can't Buy Them &#8212; Working Families Party &#8212; $48 ($0 broadcast + $48 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.003014416446656133%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Can't Buy Them</b> <span class="m">$48</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="48" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/78cfe589-5ca3-481e-a8eb-426b93c48683.mp4" target="_blank" rel="noopener" title="The Most Effective &#8212; Center Forward Committee &#8212; $48 ($0 broadcast + $48 CTV) &#8212; Unaffiliated &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.003014416446656133%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>The Most Effective</b> <span class="m">$48</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="42" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/ddc63133-6e47-4cb2-85f1-3de6ec54e7d2.mp4" target="_blank" rel="noopener" title="Most Effective Democrat &#8212; A Stronger Michigan &#8212; $42 ($0 broadcast + $42 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0026376143908241165%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Most Effective Democrat</b> <span class="m">$42</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="36" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/bb2f0232-36d0-4003-8863-3d0c3299a658.mp4" target="_blank" rel="noopener" title="Stands Out &#8212; A Stronger Michigan &#8212; $36 ($0 broadcast + $36 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0022608123349920997%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Stands Out</b> <span class="m">$36</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="30" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/81d0702e-43cb-4f67-8858-a13fad5a64f1.mp4" target="_blank" rel="noopener" title="Rescued &#8212; A Stronger Michigan &#8212; $30 ($0 broadcast + $30 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0018840102791600833%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Rescued</b> <span class="m">$30</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="28" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/3681f831-e344-4033-9469-42643e2408c8.mp4" target="_blank" rel="noopener" title="Obama Trusted &#8212; A Stronger Michigan &#8212; $28 ($0 broadcast + $28 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0017584095938827443%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Obama Trusted</b> <span class="m">$28</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="26" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/e97d4d88-d63c-4ab0-afa3-bda41f50f11b.mp4" target="_blank" rel="noopener" title="Progressive Fighter &#8212; El-Sayed for MI Senate &#8212; $26 ($0 broadcast + $26 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0016328089086054055%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Progressive Fighter</b> <span class="m">$26</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="26" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/4db34be8-09bc-467f-928b-45316f3e498f.mp4" target="_blank" rel="noopener" title="Leading The Fight &#8212; United Democracy Project &#8212; $26 ($0 broadcast + $26 CTV) &#8212; Unaffiliated &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.0016328089086054055%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Leading The Fight</b> <span class="m">$26</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="24" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/3044bd82-eba5-456b-8a38-1a2b2d963173.mp4" target="_blank" rel="noopener" title="Different Rules &#8212; A Stronger Michigan &#8212; $24 ($0 broadcast + $24 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0015072082233280664%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Different Rules</b> <span class="m">$24</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="23" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/9801e37f-6980-40e7-a79c-7f3634a35d59.mp4" target="_blank" rel="noopener" title="Protect Michigan Families &#8212; Yes MI Action Committee &#8212; $23 ($0 broadcast + $23 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.001444407880689397%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Protect Michigan Families</b> <span class="m">$23</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="21" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/89490f37-e1bf-4522-9025-4c5e1e1c5bb4.mp4" target="_blank" rel="noopener" title="Stop Watch &#8212; El-Sayed for MI Senate &#8212; $21 ($0 broadcast + $21 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0013188071954120582%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Stop Watch</b> <span class="m">$21</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="21" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/9f97894b-001f-489b-9403-1ab8bc388d16.mp4" target="_blank" rel="noopener" title="Hold ICE Accountable &#8212; Center for Democratic Priorities &#8212; $21 ($0 broadcast + $21 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0013188071954120582%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Hold ICE Accountable</b> <span class="m">$21</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="15" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/df2de374-ba08-41ac-a683-733939c9463b.mp4" target="_blank" rel="noopener" title="Get Things Done &#8212; A Stronger Michigan &#8212; $15 ($0 broadcast + $15 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0009420051395800416%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Get Things Done</b> <span class="m">$15</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="15" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/fff2bfbd-f7a3-4c04-9157-55cafa36a863.mp4" target="_blank" rel="noopener" title="As Michigan As It Gets &#8212; Fighting for Michigan &#8212; $15 ($0 broadcast + $15 CTV) &#8212; Unaffiliated &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.0009420051395800416%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>As Michigan As It Gets</b> <span class="m">$15</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="12" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/a8c9f653-a513-45c3-bc0b-b2d25b1e2a05.mp4" target="_blank" rel="noopener" title="Abolishing ICE &#8212; El-Sayed for MI Senate &#8212; $12 ($0 broadcast + $12 CTV) &#8212; Democratic &#8212; attacks Stevens &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0007536041116640332%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Abolishing ICE</b> <span class="m">$12</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="11" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/5061da34-a24b-43c4-8592-ec042ef80883.mp4" target="_blank" rel="noopener" title="Abuse Of Power &#8212; Center for Democratic Priorities &#8212; $11 ($0 broadcast + $11 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0006908037690253638%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Abuse Of Power</b> <span class="m">$11</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="9" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/dfc9cf62-cc4a-4167-ab25-88173079d75e.mp4" target="_blank" rel="noopener" title="Now's The Time :15 &#8212; Americans for Prosperity Action &#8212; $9 ($0 broadcast + $9 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.0005652030837480249%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Now's The Time :15</b> <span class="m">$9</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="8" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/0f00941c-9d6a-4aef-9228-96bb94b27cf4.mp4" target="_blank" rel="noopener" title="Deliver For Michigan &#8212; Americans for Prosperity Action &#8212; $8 ($0 broadcast + $8 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.0005024027411093555%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Deliver For Michigan</b> <span class="m">$8</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="8" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/28209790-7877-4c25-851f-48500c74f650.mp4" target="_blank" rel="noopener" title="Very Short Message &#8212; El-Sayed for MI Senate &#8212; $8 ($0 broadcast + $8 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.0005024027411093555%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Very Short Message</b> <span class="m">$8</span></span>
+    </a><a class="vbar" data-side="U" data-b="0" data-c="6" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/239dcb2e-a551-437b-ace8-cece16c27af6.mp4" target="_blank" rel="noopener" title="Providing for Michigan &#8212; Fighting for Michigan &#8212; $6 ($0 broadcast + $6 CTV) &#8212; Unaffiliated &#8212; click to play">
+      <span class="vplot"><span class="vseg U ctv top" style="height:0.0003768020558320166%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Providing for Michigan</b> <span class="m">$6</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="6" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/11438038-cc3b-4ed1-bbb0-643d4a042dd9.mp4" target="_blank" rel="noopener" title="Lying Awake :30 &#8212; Americans for Prosperity Action &#8212; $6 ($0 broadcast + $6 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.0003768020558320166%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Lying Awake :30</b> <span class="m">$6</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="5" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/e2523e8c-8213-442a-a9c2-966e6c1d9791.mp4" target="_blank" rel="noopener" title="Keep Fighting ICE &#8212; Center Forward &#8212; $5 ($0 broadcast + $5 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.00031400171319334716%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Keep Fighting ICE</b> <span class="m">$5</span></span>
+    </a><a class="vbar" data-side="D" data-b="0" data-c="4" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/17a176f9-8224-4f5c-9b26-a4f04fab78c0.mp4" target="_blank" rel="noopener" title="Football &#8212; El-Sayed for MI Senate &#8212; $4 ($0 broadcast + $4 CTV) &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D ctv top" style="height:0.00025120137055467776%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Football</b> <span class="m">$4</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="3" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/13a11d53-298d-48c5-8fba-78d578ccb732.mp4" target="_blank" rel="noopener" title="Ready To Govern :30 &#8212; Americans for Prosperity Action &#8212; $3 ($0 broadcast + $3 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.0001884010279160083%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Ready To Govern :30</b> <span class="m">$3</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="2" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/569c90fc-f6ee-4be1-9e4b-92d0ea67ccaf.mp4" target="_blank" rel="noopener" title="Like Mike &#8212; GLCF &#8212; $2 ($0 broadcast + $2 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.00012560068527733888%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Like Mike</b> <span class="m">$2</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="2" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/0a75c70a-16c8-4814-bc35-cc9a989143f3.mp4" target="_blank" rel="noopener" title="Ready To Govern :15 &#8212; Americans for Prosperity Action &#8212; $2 ($0 broadcast + $2 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.00012560068527733888%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Ready To Govern :15</b> <span class="m">$2</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="2" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/427a8c7f-bc03-4f8c-9a7f-0212ea71bef2.mp4" target="_blank" rel="noopener" title="Keep Fighting MI &#8212; Senate Opportunity Fund &#8212; $2 ($0 broadcast + $2 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.00012560068527733888%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Keep Fighting MI</b> <span class="m">$2</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="2" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/61e025fc-fdd6-4631-ba24-399c4559523f.mp4" target="_blank" rel="noopener" title="Wrong On Safety &#8212; Rogers for MI Senate &#8212; $2 ($0 broadcast + $2 CTV) &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.00012560068527733888%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Wrong On Safety</b> <span class="m">$2</span></span>
+    </a><a class="vbar" data-side="R" data-b="0" data-c="2" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/a9cf82ec-6541-49b2-b005-c08f5c9bf90a.mp4" target="_blank" rel="noopener" title="Senate Smash MISEN &#8212; NRSC &#8212; $2 ($0 broadcast + $2 CTV) &#8212; Republican &#8212; attacks Stevens &#8212; click to play">
+      <span class="vplot"><span class="vseg R ctv top" style="height:0.00012560068527733888%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Senate Smash MISEN</b> <span class="m">$2</span></span>
+    </a></div></div></div>
+</section>
+
+<section>
+  <h2>Every ad, with its money and its markets <span class="tag">ranked by spend</span></h2>
+  <div class="adlist"><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/180b3740-ebe5-49c4-af9f-da0f738acc50.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Dangerously Radical<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv R">SLF PAC</span>
+      <span class="adamt num">$1.59M</span>
+    </span>
+    <span class="admeta">$1.20M broadcast &middot; $394K CTV &middot; 594 airings &middot; on broadcast and CTV &middot; first aired 8/12</span>
+    <span class="mkline">Detroit, MI $815K &middot; Grand Rapids-Kalamazoo-Battle Creek, MI $244K &middot; Flint-Saginaw-Bay City, MI $139K</span>
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/05cbcc80-65d0-46cc-abba-a1a196a67976.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Grandparent Endorsed</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$565K</span>
+    </span>
+    <span class="admeta">$559K broadcast &middot; $7K CTV &middot; 936 airings &middot; on broadcast and CTV &middot; first aired 8/12</span>
+    <span class="mkline">Grand Rapids-Kalamazoo-Battle Creek, MI $246K &middot; Detroit, MI $171K &middot; Lansing, MI $85K &middot; Flint-Saginaw-Bay City, MI $57K &middot; Toledo, OH $427 &middot; Marquette, MI $9</span>
+    <span class="mkline">CTV: Flint-Saginaw-Bay City, MI, Detroit, MI, Lansing, MI, Grand Rapids-Kalamazoo-Battle Creek, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/2dc6d510-0eaa-4511-863d-253d5d5d5a3a.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Homegrown Communists</span>
+      <span class="adv R">GLCF</span>
+      <span class="adamt num">$407K</span>
+    </span>
+    <span class="admeta">$378K broadcast &middot; $29K CTV &middot; 645 airings &middot; on broadcast and CTV &middot; first aired 8/5</span>
+    <span class="mkline">Grand Rapids-Kalamazoo-Battle Creek, MI $157K &middot; Flint-Saginaw-Bay City, MI $119K &middot; Lansing, MI $64K &middot; Traverse City-Cadillac, MI $38K</span>
+    <span class="mkline">CTV: Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI, Detroit, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/acb951a1-f8bf-404d-b6d2-32d66a7c4b55.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Builders</span>
+      <span class="adv R">Rogers for MI Senate</span>
+      <span class="adamt num">$405K</span>
+    </span>
+    <span class="admeta">$402K broadcast &middot; $3K CTV &middot; 319 airings &middot; on broadcast and CTV &middot; first aired 8/12</span>
+    <span class="mkline">Detroit, MI $402K</span>
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Toledo, OH, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/7b4a27b4-676a-4e16-bd19-298bddbce116.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Fine<span class="badge att">attacks Rogers</span></span>
+      <span class="adv U">AFSCME Working Families Fund</span>
+      <span class="adamt num">$202K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $202K CTV &middot; CTV only &middot; first aired 8/7</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/18544e83-2e5f-45dd-a87e-9feab23b1d40.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Grandparents</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$167K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $167K CTV &middot; 5 airings &middot; CTV only &middot; first aired 7/15</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Flint-Saginaw-Bay City, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/3a984da5-3c16-4050-8515-94a6df998361.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Can't Afford<span class="badge att">attacks Rogers</span></span>
+      <span class="adv U">EDF Action Votes</span>
+      <span class="adamt num">$154K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $154K CTV &middot; CTV only &middot; first aired 7/27</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/42268d85-81f7-43a5-8e1c-8afc584c8b55.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Glasses Off</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$100K</span>
+    </span>
+    <span class="admeta">$86K broadcast &middot; $14K CTV &middot; 173 airings &middot; on broadcast and CTV &middot; first aired 8/13</span>
+    <span class="mkline">Detroit, MI $86K</span>
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/1019aa9b-e7bd-4077-af3f-ec47bb014034.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Workhorse</span>
+      <span class="adv R">Americans for Prosperity Action</span>
+      <span class="adamt num">$71K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $71K CTV &middot; CTV only &middot; first aired 8/6</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/53b34f29-c3ce-43fb-9589-11bc0bb2fb6a.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Backtracking<span class="badge att">attacks Rogers</span></span>
+      <span class="adv D">Planned Parenthood Votes</span>
+      <span class="adamt num">$65K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $65K CTV &middot; CTV only &middot; first aired 8/14</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/72b0f17b-72f1-45b5-a605-761c9dcf57c5.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Builders - NRSC</span>
+      <span class="adv R">NRSC/Rogers</span>
+      <span class="adamt num">$58K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $58K CTV &middot; CTV only &middot; first aired 8/12</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/47209b07-0d42-4f85-bbc2-56ffe1047bd7.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Michigan Values<span class="badge new">NEW</span></span>
+      <span class="adv R">NRSC/Rogers</span>
+      <span class="adamt num">$45K</span>
+    </span>
+    <span class="admeta">$45K broadcast &middot; $0 CTV &middot; 71 airings &middot; broadcast only &middot; first aired 8/18</span>
+    <span class="mkline">Detroit, MI $29K &middot; Grand Rapids-Kalamazoo-Battle Creek, MI $7K &middot; Flint-Saginaw-Bay City, MI $5K &middot; Lansing, MI $3K &middot; Traverse City-Cadillac, MI $2K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/a9dbd881-5018-42c9-baa6-95ace14234d5.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Workhorse :15</span>
+      <span class="adv R">Americans for Prosperity Action</span>
+      <span class="adamt num">$28K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $28K CTV &middot; CTV only &middot; first aired 8/6</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/01cd1160-b0cd-4eb6-8d1e-a22c0b30402a.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Supports Trump's Iran War<span class="badge att">attacks Rogers</span></span>
+      <span class="adv U">EDF Action Votes</span>
+      <span class="adamt num">$26K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $26K CTV &middot; CTV only &middot; first aired 7/27</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/0010f150-3f00-499b-9375-6b9ff76611f0.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Against Lowering Prescription Prices<span class="badge att">attacks Rogers</span></span>
+      <span class="adv U">EDF Action Votes</span>
+      <span class="adamt num">$7K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $7K CTV &middot; CTV only &middot; first aired 7/27</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/0620a135-8501-4823-bfb0-a30ffbf06c79.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">More Opportunity :15</span>
+      <span class="adv R">Libre Action</span>
+      <span class="adamt num">$2K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $2K CTV &middot; CTV only &middot; first aired 8/6</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Flint-Saginaw-Bay City, MI +5</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/13757d76-c675-448a-88a0-6713a51cad10.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Trades</span>
+      <span class="adv R">Rogers for MI Senate</span>
+      <span class="adamt num">$2K</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $2K CTV &middot; CTV only &middot; first aired 7/28</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Traverse City-Cadillac, MI +5</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/50549630-89e6-4cfe-932c-c4ba236d3ecf.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Middleclass :60</span>
+      <span class="adv R">Rogers for MI Senate</span>
+      <span class="adamt num">$332</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $332 CTV &middot; CTV only &middot; first aired 7/15</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Toledo, OH, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/a50800a4-2326-4d15-a08d-4794fd14d0bf.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">More Opportunity</span>
+      <span class="adv R">Libre Action</span>
+      <span class="adamt num">$316</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $316 CTV &middot; CTV only &middot; first aired 8/6</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Lansing, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI +4</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/f05781c0-9c9d-4cbe-a984-b79a476fb5ce.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Standing Up</span>
+      <span class="adv D">McMorrow for MI Senate</span>
+      <span class="adamt num">$258</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $258 CTV &middot; CTV only &middot; first aired 6/23</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/93f46cdf-3450-4631-ac46-1ed68e7f17dc.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Keep Fighting Back</span>
+      <span class="adv D">Yes MI Action Committee</span>
+      <span class="adamt num">$236</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $236 CTV &middot; CTV only &middot; first aired 6/9</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Green Bay-Appleton, WI +5</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/de004ea9-e2fb-4300-af13-22bde9dc0ca2.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Michigan Families Can&#8217;t Afford This Tax Hike &#8211; Protect Prosperity Now</span>
+      <span class="adv R">Americans for Prosperity</span>
+      <span class="adamt num">$194</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $194 CTV &middot; CTV only &middot; first aired 2/2</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Flint-Saginaw-Bay City, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/78f14007-2611-4779-9baf-f64a2bd2de45.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">A Dangerous Choice<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv U">United Democracy Project</span>
+      <span class="adamt num">$190</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $190 CTV &middot; CTV only &middot; first aired 7/28</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Flint-Saginaw-Bay City, MI +1</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/1e9e8549-d6ad-4cd3-957b-d9c4e831fac1.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Michigan Made</span>
+      <span class="adv D">Stevens for MI Senate</span>
+      <span class="adamt num">$186</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $186 CTV &middot; CTV only &middot; first aired 7/16</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, South Bend-Elkhart, IN +2</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/d52ba581-823d-4e40-af77-e63fbc28b937.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Michigan&#8217;s Future</span>
+      <span class="adv R">GLCF</span>
+      <span class="adamt num">$174</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $174 CTV &middot; CTV only &middot; first aired 7/7</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Toledo, OH, Flint-Saginaw-Bay City, MI +4</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/62c6c2a3-ef19-41e6-bd23-be28b488119e.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Too Radical<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv R">NRSC</span>
+      <span class="adamt num">$141</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $141 CTV &middot; CTV only &middot; first aired 8/6</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Traverse City-Cadillac, MI +5</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/3c71ec3f-8cf2-4b74-9774-d4c4f81d0ca6.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Fights Power<span class="badge att">attacks Stevens</span></span>
+      <span class="adv D">Unite to Win</span>
+      <span class="adamt num">$139</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $139 CTV &middot; CTV only &middot; first aired 7/16</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Toledo, OH, Lansing, MI +6</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/99ee51c0-7f76-493a-a4fe-5e8604f161c4.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Sexist Attacks<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv U">United Democracy Project</span>
+      <span class="adamt num">$130</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $130 CTV &middot; CTV only &middot; first aired 7/14</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Traverse City-Cadillac, MI +1</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/5cb4411b-541b-4669-822c-a3cd702a70fa.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Stop<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv D">Stevens for MI Senate</span>
+      <span class="adamt num">$117</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $117 CTV &middot; CTV only &middot; first aired 7/24</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Traverse City-Cadillac, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/3a42a57e-e9df-493b-9e14-2444df9fac1b.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Attacks And Lies</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$85</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $85 CTV &middot; CTV only &middot; first aired 7/25</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI +1</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/10d35a1e-8938-4579-bd33-948bb8ba4071.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">A Proven Fighter</span>
+      <span class="adv D">Fight for Michigan</span>
+      <span class="adamt num">$80</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $80 CTV &middot; CTV only &middot; first aired 7/28</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Lansing, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/157caec2-5ede-4902-883f-668ded02a81b.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Built In Michigan</span>
+      <span class="adv R">GLCF</span>
+      <span class="adamt num">$76</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $76 CTV &middot; CTV only &middot; first aired 7/22</span>
+    
+    <span class="mkline">CTV: Grand Rapids-Kalamazoo-Battle Creek, MI, Traverse City-Cadillac, MI, Flint-Saginaw-Bay City, MI, Lansing, MI +1</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/61cfa876-8dd5-4ee2-bd52-b2a0d8cd5744.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Do The Work</span>
+      <span class="adv R">First Principles Digital</span>
+      <span class="adamt num">$73</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $73 CTV &middot; CTV only &middot; first aired 7/28</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Duluth, MN-Superior, WI, Toledo, OH</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/8a599dbd-dea3-41b7-ae60-35adaba97262.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Martha G. Scott</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$67</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $67 CTV &middot; CTV only &middot; first aired 7/7</span>
+    
+    <span class="mkline">CTV: Detroit, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/81379a6a-0b6b-47bd-b4f1-09c5cfda403a.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Cool Kids</span>
+      <span class="adv D">Stevens for MI Senate</span>
+      <span class="adamt num">$61</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $61 CTV &middot; CTV only &middot; first aired 7/31</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Marquette, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/d9ba5d2e-db78-4493-a292-572a1d0042ce.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Son Of Michigan</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$61</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $61 CTV &middot; CTV only &middot; first aired 6/16</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Green Bay-Appleton, WI, Lansing, MI, Grand Rapids-Kalamazoo-Battle Creek, MI +3</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/a68d809e-17ee-4fd3-8f7e-c1baee996020.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Middleclass</span>
+      <span class="adv R">Rogers for MI Senate</span>
+      <span class="adamt num">$58</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $58 CTV &middot; CTV only &middot; first aired 7/14</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Toledo, OH</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/b6013db4-7a00-401b-ac9e-16b163189cb3.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Obama's Team</span>
+      <span class="adv U">United Democracy Project</span>
+      <span class="adamt num">$56</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $56 CTV &middot; CTV only &middot; first aired 6/9</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Traverse City-Cadillac, MI +3</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/44664d84-5e2d-4393-bfc4-51880d740126.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Stands Out</span>
+      <span class="adv D">Fight for Michigan</span>
+      <span class="adamt num">$54</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $54 CTV &middot; CTV only &middot; first aired 7/23</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Flint-Saginaw-Bay City, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/588044f5-830d-4710-ba55-d810afba812e.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Can't Win<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv U">United Democracy Project</span>
+      <span class="adamt num">$52</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $52 CTV &middot; CTV only &middot; first aired 7/15</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Lansing, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI +1</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/4386555b-2037-4fe2-9d3f-fbabc0323795.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Can't Buy Them</span>
+      <span class="adv D">Working Families Party</span>
+      <span class="adamt num">$48</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $48 CTV &middot; CTV only &middot; first aired 7/28</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Traverse City-Cadillac, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/78cfe589-5ca3-481e-a8eb-426b93c48683.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">The Most Effective</span>
+      <span class="adv U">Center Forward Committee</span>
+      <span class="adamt num">$48</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $48 CTV &middot; CTV only &middot; first aired 5/12</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI, Green Bay-Appleton, WI +3</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/ddc63133-6e47-4cb2-85f1-3de6ec54e7d2.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Most Effective Democrat</span>
+      <span class="adv D">A Stronger Michigan</span>
+      <span class="adamt num">$42</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $42 CTV &middot; CTV only &middot; first aired 6/4</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Marquette, MI +2</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/bb2f0232-36d0-4003-8863-3d0c3299a658.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Stands Out</span>
+      <span class="adv D">A Stronger Michigan</span>
+      <span class="adamt num">$36</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $36 CTV &middot; CTV only &middot; first aired 7/23</span>
+    
+    <span class="mkline">CTV: Detroit, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/81d0702e-43cb-4f67-8858-a13fad5a64f1.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Rescued</span>
+      <span class="adv D">A Stronger Michigan</span>
+      <span class="adamt num">$30</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $30 CTV &middot; CTV only &middot; first aired 7/9</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Flint-Saginaw-Bay City, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/3681f831-e344-4033-9469-42643e2408c8.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Obama Trusted</span>
+      <span class="adv D">A Stronger Michigan</span>
+      <span class="adamt num">$28</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $28 CTV &middot; CTV only &middot; first aired 7/8</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Green Bay-Appleton, WI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/e97d4d88-d63c-4ab0-afa3-bda41f50f11b.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Progressive Fighter</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$26</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $26 CTV &middot; CTV only &middot; first aired 6/23</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Lansing, MI, Flint-Saginaw-Bay City, MI, Grand Rapids-Kalamazoo-Battle Creek, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/4db34be8-09bc-467f-928b-45316f3e498f.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Leading The Fight</span>
+      <span class="adv U">United Democracy Project</span>
+      <span class="adamt num">$26</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $26 CTV &middot; CTV only &middot; first aired 6/18</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Lansing, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Toledo, OH +1</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/3044bd82-eba5-456b-8a38-1a2b2d963173.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Different Rules</span>
+      <span class="adv D">A Stronger Michigan</span>
+      <span class="adamt num">$24</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $24 CTV &middot; CTV only &middot; first aired 6/20</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/9801e37f-6980-40e7-a79c-7f3634a35d59.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Protect Michigan Families</span>
+      <span class="adv D">Yes MI Action Committee</span>
+      <span class="adamt num">$23</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $23 CTV &middot; CTV only &middot; first aired 6/9</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Traverse City-Cadillac, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/89490f37-e1bf-4522-9025-4c5e1e1c5bb4.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Stop Watch</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$21</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $21 CTV &middot; CTV only &middot; first aired 6/17</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Lansing, MI, Toledo, OH +3</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/9f97894b-001f-489b-9403-1ab8bc388d16.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Hold ICE Accountable</span>
+      <span class="adv D">Center for Democratic Priorities</span>
+      <span class="adamt num">$21</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $21 CTV &middot; CTV only &middot; first aired 5/9</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI, Grand Rapids-Kalamazoo-Battle Creek, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/df2de374-ba08-41ac-a683-733939c9463b.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Get Things Done</span>
+      <span class="adv D">A Stronger Michigan</span>
+      <span class="adamt num">$15</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $15 CTV &middot; CTV only &middot; first aired 7/28</span>
+    
+    <span class="mkline">CTV: Detroit, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/fff2bfbd-f7a3-4c04-9157-55cafa36a863.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">As Michigan As It Gets</span>
+      <span class="adv U">Fighting for Michigan</span>
+      <span class="adamt num">$15</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $15 CTV &middot; CTV only &middot; first aired 6/16</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Traverse City-Cadillac, MI, Toledo, OH</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/a8c9f653-a513-45c3-bc0b-b2d25b1e2a05.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Abolishing ICE<span class="badge att">attacks Stevens</span></span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$12</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $12 CTV &middot; CTV only &middot; first aired 7/11</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Flint-Saginaw-Bay City, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/5061da34-a24b-43c4-8592-ec042ef80883.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Abuse Of Power</span>
+      <span class="adv D">Center for Democratic Priorities</span>
+      <span class="adamt num">$11</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $11 CTV &middot; CTV only &middot; first aired 5/22</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/dfc9cf62-cc4a-4167-ab25-88173079d75e.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Now's The Time :15</span>
+      <span class="adv R">Americans for Prosperity Action</span>
+      <span class="adamt num">$9</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $9 CTV &middot; CTV only &middot; first aired 6/2</span>
+    
+    <span class="mkline">CTV: Marquette, MI, Grand Rapids-Kalamazoo-Battle Creek, MI, Flint-Saginaw-Bay City, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/0f00941c-9d6a-4aef-9228-96bb94b27cf4.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Deliver For Michigan</span>
+      <span class="adv R">Americans for Prosperity Action</span>
+      <span class="adamt num">$8</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $8 CTV &middot; CTV only &middot; first aired 7/10</span>
+    
+    <span class="mkline">CTV: Alpena, MI, Flint-Saginaw-Bay City, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/28209790-7877-4c25-851f-48500c74f650.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Very Short Message</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$8</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $8 CTV &middot; CTV only &middot; first aired 6/30</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Lansing, MI, Traverse City-Cadillac, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/239dcb2e-a551-437b-ace8-cece16c27af6.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Providing for Michigan</span>
+      <span class="adv U">Fighting for Michigan</span>
+      <span class="adamt num">$6</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $6 CTV &middot; CTV only &middot; first aired 7/7</span>
+    
+    <span class="mkline">CTV: Detroit, MI, Green Bay-Appleton, WI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/11438038-cc3b-4ed1-bbb0-643d4a042dd9.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Lying Awake :30</span>
+      <span class="adv R">Americans for Prosperity Action</span>
+      <span class="adamt num">$6</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $6 CTV &middot; CTV only &middot; first aired 4/8</span>
+    
+    <span class="mkline">CTV: Toledo, OH, South Bend-Elkhart, IN, Green Bay-Appleton, WI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/e2523e8c-8213-442a-a9c2-966e6c1d9791.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Keep Fighting ICE</span>
+      <span class="adv D">Center Forward</span>
+      <span class="adamt num">$5</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $5 CTV &middot; CTV only &middot; first aired 5/12</span>
+    
+    <span class="mkline">CTV: Detroit, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/17a176f9-8224-4f5c-9b26-a4f04fab78c0.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Football</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$4</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $4 CTV &middot; CTV only &middot; first aired 12/31</span>
+    
+    <span class="mkline">CTV: Grand Rapids-Kalamazoo-Battle Creek, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/13a11d53-298d-48c5-8fba-78d578ccb732.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Ready To Govern :30</span>
+      <span class="adv R">Americans for Prosperity Action</span>
+      <span class="adamt num">$3</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $3 CTV &middot; CTV only &middot; first aired 6/2</span>
+    
+    <span class="mkline">CTV: Grand Rapids-Kalamazoo-Battle Creek, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/569c90fc-f6ee-4be1-9e4b-92d0ea67ccaf.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Like Mike</span>
+      <span class="adv R">GLCF</span>
+      <span class="adamt num">$2</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $2 CTV &middot; CTV only &middot; first aired 6/18</span>
+    
+    <span class="mkline">CTV: Detroit, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/0a75c70a-16c8-4814-bc35-cc9a989143f3.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Ready To Govern :15</span>
+      <span class="adv R">Americans for Prosperity Action</span>
+      <span class="adamt num">$2</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $2 CTV &middot; CTV only &middot; first aired 6/2</span>
+    
+    <span class="mkline">CTV: South Bend-Elkhart, IN</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/427a8c7f-bc03-4f8c-9a7f-0212ea71bef2.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Keep Fighting MI</span>
+      <span class="adv R">Senate Opportunity Fund</span>
+      <span class="adamt num">$2</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $2 CTV &middot; CTV only &middot; first aired 3/4</span>
+    
+    <span class="mkline">CTV: Detroit, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/61e025fc-fdd6-4631-ba24-399c4559523f.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Wrong On Safety</span>
+      <span class="adv R">Rogers for MI Senate</span>
+      <span class="adamt num">$2</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $2 CTV &middot; CTV only &middot; first aired 1/23</span>
+    
+    <span class="mkline">CTV: Grand Rapids-Kalamazoo-Battle Creek, MI</span>
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/a9cf82ec-6541-49b2-b005-c08f5c9bf90a.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Senate Smash MISEN<span class="badge att">attacks Stevens</span></span>
+      <span class="adv R">NRSC</span>
+      <span class="adamt num">$2</span>
+    </span>
+    <span class="admeta">$0 broadcast &middot; $2 CTV &middot; CTV only &middot; first aired 12/8</span>
+    
+    <span class="mkline">CTV: Green Bay-Appleton, WI</span>
+  </a></div>
+</section>
+
+<section>
+  <h2>Where the money is going <span class="tag">top 11 of 11 markets</span></h2>
+  <p class="lede">Every market any of these ads is running in, ranked by total spend across all advertisers.</p>
+  <table class="mktable">
+    <thead><tr><th>Market</th><th class="n">Broadcast</th><th class="n">CTV</th><th class="n">Airings</th><th class="n">Ads</th></tr></thead>
+    <tbody><tr>
+      <td>Detroit, MI</td>
+      <td class="n">$1.50M</td>
+      <td class="n">$675K</td>
+      <td class="n">921</td>
+      <td class="n">61</td>
+    </tr><tr>
+      <td>Grand Rapids-Kalamazoo-Battle Creek, MI</td>
+      <td class="n">$654K</td>
+      <td class="n">$211K</td>
+      <td class="n">872</td>
+      <td class="n">51</td>
+    </tr><tr>
+      <td>Flint-Saginaw-Bay City, MI</td>
+      <td class="n">$320K</td>
+      <td class="n">$140K</td>
+      <td class="n">450</td>
+      <td class="n">46</td>
+    </tr><tr>
+      <td>Lansing, MI</td>
+      <td class="n">$152K</td>
+      <td class="n">$84K</td>
+      <td class="n">355</td>
+      <td class="n">41</td>
+    </tr><tr>
+      <td>Traverse City-Cadillac, MI</td>
+      <td class="n">$40K</td>
+      <td class="n">$56K</td>
+      <td class="n">138</td>
+      <td class="n">40</td>
+    </tr><tr>
+      <td>South Bend-Elkhart, IN</td>
+      <td class="n">$0</td>
+      <td class="n">$20K</td>
+      <td class="n">&#8212;</td>
+      <td class="n">28</td>
+    </tr><tr>
+      <td>Toledo, OH</td>
+      <td class="n">$427</td>
+      <td class="n">$18K</td>
+      <td class="n">1</td>
+      <td class="n">35</td>
+    </tr><tr>
+      <td>Marquette, MI</td>
+      <td class="n">$9</td>
+      <td class="n">$16K</td>
+      <td class="n">1</td>
+      <td class="n">23</td>
+    </tr><tr>
+      <td>Alpena, MI</td>
+      <td class="n">$0</td>
+      <td class="n">$6K</td>
+      <td class="n">&#8212;</td>
+      <td class="n">19</td>
+    </tr><tr>
+      <td>Green Bay-Appleton, WI</td>
+      <td class="n">$0</td>
+      <td class="n">$2K</td>
+      <td class="n">&#8212;</td>
+      <td class="n">25</td>
+    </tr><tr>
+      <td>Duluth, MN-Superior, WI</td>
+      <td class="n">$0</td>
+      <td class="n">$236</td>
+      <td class="n">&#8212;</td>
+      <td class="n">11</td>
+    </tr></tbody>
+  </table>
+</section>
+
+<section class="keep">
+  <h2>Source</h2>
+  <div class="warnbox">
+    <p><b>Where these numbers come from.</b> AdMo+ per-creative analysis, pulled 2026-08-18 20:21 UTC for 8/12&#8211;8/18. 70 television creatives out of 103 in the race feed; digital-only creatives are excluded by design.</p>
+    <p>Spend is summed from each ad&rsquo;s per-market figures, which are windowed. Broadcast (<code>NOT_DIGITAL</code>) excludes CTV, so the two never double-count.</p>
+    
+  </div>
+</section>
+
+<footer>
+  <p>Generated by <code>scripts/onair-report.js</code> from an AdMo+ pull. Read-only: it writes a report, never campaign data.</p>
+  <p>Video links resolve to <code>pdfweb.s3.amazonaws.com/videos/&lt;uuid&gt;.mp4</code>.</p>
+</footer></article>
+
+
+
+<p class="archnote noprint">Reports are added every morning and never removed, so any past day stays here to read or download.</p>
+</div>
+
+<script>
+(function(){
+  function fmt(n){
+    if(!n) return '$0';
+    if(n>=1e9) return '$'+(n/1e9).toFixed(n>=1e10?0:1)+'B';
+    if(n>=1e6) return '$'+(n/1e6).toFixed(n>=1e7?1:2)+'M';
+    if(n>=1e3) return '$'+Math.round(n/1e3)+'K';
+    return '$'+Math.round(n);
+  }
+  function apply(scope, filter){
+    var bars = Array.prototype.slice.call(scope.querySelectorAll('.vbar'));
+    var vis = bars.filter(function(b){
+      if(!filter) return true;
+      if(filter==='D'||filter==='R'||filter==='U') return b.dataset.side===filter;
+      if(filter==='new') return b.dataset.new==='1';
+      if(filter==='ctv') return parseFloat(b.dataset.c||0) > 0;
+      if(filter==='bcast') return parseFloat(b.dataset.b||0) > 0;
+      return true;
+    });
+    bars.forEach(function(b){ b.hidden = vis.indexOf(b)===-1; });
+
+    // Which dollars each bar is drawn from depends on the filter.
+    var valOf = function(b){
+      var bc = parseFloat(b.dataset.b||0), c = parseFloat(b.dataset.c||0);
+      if(filter==='ctv') return c;
+      if(filter==='bcast') return bc;
+      return bc + c;
+    };
+    var max = Math.max.apply(null, vis.map(valOf).concat([1]));
+
+    vis.forEach(function(b){
+      var bc = parseFloat(b.dataset.b||0), c = parseFloat(b.dataset.c||0);
+      var segB = b.querySelector('.vseg:not(.ctv)'), segC = b.querySelector('.vseg.ctv');
+      var showB = filter!=='ctv', showC = filter!=='bcast';
+      if(segB){ segB.style.display = showB && bc>0 ? '' : 'none'; segB.style.height = (bc/max*100)+'%'; }
+      if(segC){ segC.style.display = showC && c>0 ? '' : 'none'; segC.style.height = (c/max*100)+'%'; }
+      var m = b.querySelector('.vlab .m');
+      if(m) m.textContent = fmt(valOf(b));
+    });
+
+    var ticks = scope.querySelectorAll('.ytick');
+    var steps = [0,.25,.5,.75,1];
+    for(var i=0;i<ticks.length;i++) ticks[i].textContent = steps[i] ? fmt(Math.round(max*steps[i])) : '0';
+
+    var cnt = scope.querySelector('.filtercount');
+    if(cnt) cnt.textContent = filter ? vis.length + ' of ' + bars.length + ' ads shown' : '';
+  }
+
+  document.addEventListener('click', function(e){
+    var key = e.target.closest ? e.target.closest('.lkey') : null;
+    if(!key) return;
+    var legend = key.closest('.legend');
+    var scope = key.closest('section') || document;
+    var want = key.dataset.filter;
+    var active = legend.querySelector('.lkey.on');
+    var same = active === key;
+    legend.querySelectorAll('.lkey').forEach(function(k){ k.classList.remove('on'); k.setAttribute('aria-pressed','false'); });
+    if(!same){ key.classList.add('on'); key.setAttribute('aria-pressed','true'); }
+    apply(scope, same ? null : want);
+  });
+})();
+</script>
+<script>
+(function(){
+  var days = Array.prototype.slice.call(document.querySelectorAll('.day'));
+  var pick = document.getElementById('daypick');
+  var prev = document.getElementById('prev'), next = document.getElementById('next');
+  var pngNode = document.getElementById('pngs');
+  var PNGS = pngNode ? JSON.parse(pngNode.textContent || '{}') : {};
+  var mdNode = document.getElementById('mds');
+  var MDS  = mdNode ? JSON.parse(mdNode.textContent || '{}') : {};
+  var status = document.getElementById('status');
+  var PREFIX = "mi-sen-onair";
+
+  function say(msg, why, tone){
+    status.hidden = false;
+    status.className = 'status' + (tone ? ' ' + tone : '');
+    status.textContent = msg;
+    if (why) { var s = document.createElement('span'); s.className = 'why'; s.textContent = why; status.appendChild(s); }
+  }
+  function currentDate(){ return document.querySelector('.day:not([hidden])').dataset.date; }
+
+  // Options are newest-first, so "next" (newer) moves toward index 0.
+  function show(date){
+    days.forEach(function(a){ a.hidden = a.dataset.date !== date; });
+    pick.value = date;
+    var i = pick.selectedIndex;
+    next.disabled = i <= 0;
+    prev.disabled = i >= pick.options.length - 1;
+    status.hidden = true;
+    window.scrollTo(0, 0);
+  }
+  pick.addEventListener('change', function(){ show(pick.value); });
+  prev.addEventListener('click', function(){ if (pick.selectedIndex < pick.options.length - 1) show(pick.options[pick.selectedIndex + 1].value); });
+  next.addEventListener('click', function(){ if (pick.selectedIndex > 0) show(pick.options[pick.selectedIndex - 1].value); });
+  document.addEventListener('keydown', function(e){
+    if (e.target && /^(SELECT|INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+    if (e.key === 'ArrowLeft') prev.click();
+    if (e.key === 'ArrowRight') next.click();
+  });
+  show(days[0].dataset.date);
+
+  // A collapsed drawer prints as nothing, so open every one and put them back after \u2014
+  // the printed page is meant to be the complete day, not the folded view.
+  function openDrawers(){
+    var shut = Array.prototype.filter.call(
+      document.querySelectorAll('.day:not([hidden]) details'), function(d){ return !d.open; });
+    shut.forEach(function(d){ d.open = true; });
+    return function(){ shut.forEach(function(d){ d.open = false; }); };
+  }
+  function bytesOf(b64){
+    var bin = atob(b64), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  // A sandboxed viewer can refuse the print dialog WITHOUT throwing, so watch for
+  // beforeprint and treat silence as a refusal rather than reporting a success.
+  async function tryPrint(){
+    var restore0 = openDrawers();
+    // "Save as PDF" names the file after document.title, so borrow the filename we would
+    // have used for the direct download, then put the real title back.
+    var realTitle = document.title;
+    document.title = PREFIX + '-' + currentDate();
+    var restore = function(){ document.title = realTitle; restore0(); };
+    var printed = false;
+    var mark = function(){ printed = true; };
+    window.addEventListener('beforeprint', mark, { once: true });
+    window.addEventListener('afterprint', restore, { once: true });
+    try { window.print(); } catch (e) { /* the silence check below is the real test */ }
+    await new Promise(function(r){ setTimeout(r, 700); });
+    window.removeEventListener('beforeprint', mark);
+    if (!printed) restore();
+    else setTimeout(function(){ document.title = realTitle; }, 60000);
+    return printed;
+  }
+
+  var TAB_HINT = 'Or open this page in its own tab with the expand arrows at the top right, then press Cmd+P.';
+
+  // Markdown is in the platform's always-allowed extension set, so this is the one download
+  // that works even where .pdf and .html are refused. It carries every figure on the page.
+  // A secondary action inside the status line, so a fallback is something the reader
+  // chooses rather than something that happens to them.
+  function offer(label, fn){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'statusbtn'; b.textContent = label;
+    b.addEventListener('click', function(){ b.disabled = true; fn(); });
+    status.appendChild(document.createElement('br'));
+    status.appendChild(b);
+  }
+
+  async function saveMarkdown(date, why){
+    var md = MDS[date];
+    if (!md) return false;
+    var downloads = (window.claude && typeof claude.use === 'function') ? await claude.use('downloads') : null;
+    if (!downloads) return false;
+    try {
+      await downloads.save({ filename: PREFIX + '-' + date + '.md', data: md });
+      say('Saved ' + PREFIX + '-' + date + '.md',
+          why || 'Every figure from this page, as text. The full PDF is in your morning message.', 'good');
+      return true;
+    } catch (e) { return false; }
+  }
+
+  document.getElementById('printbtn').addEventListener('click', async function(){
+    say('Opening the print dialog...');
+    if (await tryPrint()) say('Print dialog open.', 'Choose "Save as PDF" as the destination.', 'good');
+    else say('This viewer blocked the print dialog.', TAB_HINT, 'bad');
+  });
+
+  var pdfBtn = document.getElementById('pdf');
+  if (pdfBtn) pdfBtn.addEventListener('click', async function(){
+    var date = currentDate();
+    var downloads = (window.claude && typeof claude.use === 'function') ? await claude.use('downloads') : null;
+    if (!downloads) {
+      say('This viewer cannot save files.', TAB_HINT, 'bad');
+      return;
+    }
+    var png = PNGS[date];
+    if (png) {
+      say('Waiting for you to confirm the download...');
+      try {
+        await downloads.save({ filename: PREFIX + '-' + date + '.png', data: bytesOf(png) });
+        say('Saved ' + PREFIX + '-' + date + '.png',
+            'The whole report as one image. The print-ready PDF is attached to your morning message.', 'good');
+        return;
+      } catch (err) {
+        var c = (err && err.code) || 'unknown';
+        if (c === 'declined') { say('Download cancelled.', null); return; }
+        if (c === 'rate_limited') { say('A download prompt is already open.', 'Finish that one, then try again.', 'bad'); return; }
+        // fall through to the text copy
+      }
+    }
+    if (await saveMarkdown(date)) return;
+    say('Nothing could be saved for ' + date + '.',
+        'Older days keep only the text copy, and this view refused that too. ' + TAB_HINT, 'bad');
+  });
+
+})();
+</script>

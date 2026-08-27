@@ -166,17 +166,287 @@ footer p{margin:0 0 6px;max-width:82ch}
   <div class="brand">On the air <span>&#183; MI Senate 2026</span></div>
   <div class="daynav">
     <button id="prev" type="button" title="Older report" aria-label="Older report">&lsaquo;</button>
-    <select id="daypick" aria-label="Choose a report date"><option value="2026-08-22" selected>Saturday, August 22, 2026</option><option value="2026-08-21">Friday, August 21, 2026</option><option value="2026-08-20">Thursday, August 20, 2026</option><option value="2026-08-19">Wednesday, August 19, 2026</option><option value="2026-08-18">Tuesday, August 18, 2026</option></select>
+    <select id="daypick" aria-label="Choose a report date"><option value="2026-08-27" selected>Thursday, August 27, 2026</option><option value="2026-08-22">Saturday, August 22, 2026</option><option value="2026-08-21">Friday, August 21, 2026</option><option value="2026-08-20">Thursday, August 20, 2026</option><option value="2026-08-19">Wednesday, August 19, 2026</option><option value="2026-08-18">Tuesday, August 18, 2026</option></select>
     <button id="next" type="button" title="Newer report" aria-label="Newer report">&rsaquo;</button>
   </div>
   <div class="actions">
     <button id="printbtn" class="primary" type="button">Save as PDF</button>
   </div>
-  <p class="pdfnote">5 reports on file, back to Tuesday, August 18, 2026. Choose "Save as PDF" as the destination; the day you are viewing is what prints.</p>
+  <p class="pdfnote">6 reports on file, back to Tuesday, August 18, 2026. Choose "Save as PDF" as the destination; the day you are viewing is what prints.</p>
   <p class="status" id="status" hidden></p>
 </div>
 
-<article class="day" data-date="2026-08-22"><style>
+<article class="day" data-date="2026-08-27"><style>
+.adlist{background:var(--surface);border:1px solid var(--line);padding:10px 14px;display:flex;flex-direction:column;gap:12px}
+.adrow{display:block;text-decoration:none;color:inherit;padding-bottom:11px;border-bottom:1px solid var(--line-soft)}
+.adlist .adrow:last-child{border-bottom:none;padding-bottom:0}
+.adrow:hover .adname{color:var(--dem)}
+.adtop{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
+.adname{font-size:14.5px;font-weight:650;color:var(--ink)}
+.adv{font-size:12.5px;font-weight:600;color:var(--ink-3)}
+.adv.D{color:var(--dem)} .adv.R{color:var(--rep)}
+.adamt{margin-left:auto;font-size:14.5px;font-weight:700}
+.admeta{display:block;font-size:12px;color:var(--ink-2);margin-top:3px}
+.mkline{display:block;font-size:11.5px;color:var(--ink-3);margin-top:2px}
+.badge{display:inline-block;margin-left:6px;font-size:9px;font-weight:700;letter-spacing:.06em;
+  border-radius:2px;padding:0 4px;vertical-align:1px;text-transform:uppercase}
+.badge.new{color:var(--new);border:1px solid var(--new)}
+.badge.att{color:var(--rep);border:1px solid var(--rep)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--new);
+  padding:13px 16px;margin:0 0 10px}
+.card.token{border-left-color:var(--ink-3)}
+.card.modest{border-left-color:var(--warn)}
+.card h3{margin:0 0 3px;font-size:16px;font-weight:700}
+.card h3 a{color:inherit;text-decoration:none;border-bottom:1.5px solid var(--dem)}
+.card .verdict{font-size:13.5px;color:var(--ink-2);margin:6px 0 0}
+.card .verdict b{color:var(--ink)}
+.card .sub{font-size:12.5px;color:var(--ink-3);margin:2px 0 0}
+
+.mktable{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface);border:1px solid var(--line)}
+.mktable th,.mktable td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line-soft)}
+.mktable th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.mktable td.n,.mktable th.n{text-align:right;font-family:ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.mktable tr:last-child td{border-bottom:none}
+.warnbox{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--warn);
+  padding:12px 15px;margin:0 0 16px;font-size:13.5px}
+.warnbox p{margin:0 0 6px;color:var(--ink-2);max-width:82ch}
+.warnbox p:last-child{margin-bottom:0}
+.warnbox b{color:var(--ink)}
+</style><header>
+  <p class="eyebrow">Michigan U.S. Senate &middot; Thursday, August 27, 2026</p>
+  <h1>What&rsquo;s on the air</h1>
+  <p class="standfirst">Every ad detected on broadcast or CTV in the window, sized by the money behind it. <strong>Click any bar or title to play the ad.</strong></p>
+  <p class="scopebar"><b>Window: 8/21&#8211;8/27.</b> Broadcast and CTV are separate, disjoint buckets and are shown separately; digital dollars are never mixed in. <b>CTV figures are unavailable today &mdash; AdMo is returning no CTV history at all.</b> Everything below is broadcast only.</p>
+  <div class="warnbox" style="margin-top:14px"><p><b>CTV is missing from this report, and that is a data outage &mdash; not ads going dark.</b> AdMo returns an empty CTV market list for every creative, including 3 that it still tags as running on CTV. Re-querying a past window that previously reported CTV money now returns nothing for that same window, so the platform has lost the history rather than the buys having stopped.</p><p>Read every figure on this page as <b>broadcast only</b>. Broadcast reconciles exactly against AdMo&rsquo;s own per-creative totals and is sound. The true totals are higher than shown by whatever is running on CTV.</p></div>
+</header>
+
+<dl class="stats">
+    <div class="stat"><dt>Ads on air</dt><dd class="num">10<span class="sub">8/21&#8211;8/27</span></dd></div>
+    <div class="stat"><dt>Spend behind them</dt><dd class="num">$3.68M<span class="sub">$3.68M broadcast &middot; CTV unavailable</span></dd></div>
+    <div class="stat"><dt>New ads</dt><dd class="num" style="color:var(--new)">1<span class="sub">first aired in the last 2 days</span></dd></div>
+    <div class="stat"><dt>Democratic side</dt><dd class="num" style="color:var(--dem)">$1.50M<span class="sub">41% of the money</span></dd></div>
+    <div class="stat"><dt>Republican side</dt><dd class="num" style="color:var(--rep)">$2.18M<span class="sub">59% of the money</span></dd></div>
+    
+  </dl>
+  
+
+<section class="keep">
+  <h2>New ads &mdash; is there money behind them? <span class="tag">1 in the last 2 days</span></h2>
+  <p class="lede">A launch only matters if it is funded. Each new ad below carries its actual spend so far, so a token placement never reads like a real buy.</p>
+  <div class="card modest">
+        <h3><a href="https://pdfweb.s3.amazonaws.com/videos/899ed90a-4461-4c22-aff7-b8869a621680.mp4" target="_blank" rel="noopener">&ldquo;Michigan Kid&rdquo;</a></h3>
+        <p class="sub">El-Sayed for MI Senate &middot; Democratic &middot; attacks Rogers &middot; first aired 8/26</p>
+        <p class="verdict"><b>$44K</b> behind it so far &mdash; a modest buy. $44K broadcast, CTV unavailable, 74 airings; broadcast only.</p>
+        <p class="sub">Airing in Grand Rapids-Kalamazoo-Battle Creek, MI</p>
+      </div>
+</section>
+
+<section class="keep">
+  <h2>Everything on air <span class="tag">10 ads &middot; $3.68M</span></h2>
+  <p class="lede">Bar height is total spend behind the ad. The solid block is broadcast; the lighter outlined block on top is CTV. Colour is the advertiser&rsquo;s side, and a green tick marks an ad that launched in the last 2 days. <b>Tap a key below to show only those ads</b> &mdash; the scale resizes to what is left, so the small buys stay readable. Tap it again to clear.</p>
+  <div class="legend">
+    <button type="button" class="lkey" data-filter="D" aria-pressed="false"><i class="swatch" style="background:var(--dem)"></i> Democratic</button>
+    <button type="button" class="lkey" data-filter="R" aria-pressed="false"><i class="swatch" style="background:var(--rep)"></i> Republican</button>
+    
+    <button type="button" class="lkey" data-filter="bcast" aria-pressed="false"><i class="swatch" style="background:var(--ink-3)"></i> Broadcast</button>
+    <button type="button" class="lkey" data-filter="ctv" aria-pressed="false"><i class="swatch ctv" style="background:var(--ink-3)"></i> CTV</button>
+    <button type="button" class="lkey" data-filter="new" aria-pressed="false"><i class="swatch" style="background:var(--new)"></i> New ad</button>
+    <span class="filtercount"></span>
+  </div>
+  <div class="cwrap"><div class="ygut"><span class="ytick" style="top:100%">0</span><span class="ytick" style="top:75%">$285K</span><span class="ytick" style="top:50%">$571K</span><span class="ytick" style="top:25%">$856K</span><span class="ytick" style="top:0%">$1.14M</span></div>
+    <div class="plotbox"><div class="gls"><span class="gl base" style="top:100%"></span><span class="gl" style="top:75%"></span><span class="gl" style="top:50%"></span><span class="gl" style="top:25%"></span><span class="gl" style="top:0%"></span></div><div class="vchart"><a class="vbar" data-side="R" data-b="1141803" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/180b3740-ebe5-49c4-af9f-da0f738acc50.mp4" target="_blank" rel="noopener" title="Dangerously Radical &#8212; SLF PAC &#8212; $1,141,803 ($1,141,803 broadcast + $0 CTV) &#8212; 588 airings &#8212; Republican &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg R top" style="height:100%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Dangerously Radical</b> <span class="m">$1.14M</span></span>
+    </a><a class="vbar" data-side="D" data-b="829475" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/1f10ad51-424c-4b68-a7c7-0d17e7288f9a.mp4" target="_blank" rel="noopener" title="Rigged &#8212; WinSenate &#8212; $829,475 ($829,475 broadcast + $0 CTV) &#8212; 747 airings &#8212; Democratic &#8212; attacks Rogers &#8212; click to play">
+      <span class="vplot"><span class="vseg D top" style="height:72.6460741506404%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Rigged</b> <span class="m">$829K</span></span>
+    </a><a class="vbar" data-side="R" data-b="619100" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/47209b07-0d42-4f85-bbc2-56ffe1047bd7.mp4" target="_blank" rel="noopener" title="Michigan Values &#8212; NRSC/Rogers &#8212; $619,100 ($619,100 broadcast + $0 CTV) &#8212; 887 airings &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R top" style="height:54.221220676072726%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Michigan Values</b> <span class="m">$619K</span></span>
+    </a><a class="vbar" data-side="D" data-b="419259" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/05cbcc80-65d0-46cc-abba-a1a196a67976.mp4" target="_blank" rel="noopener" title="Grandparent Endorsed &#8212; El-Sayed for MI Senate &#8212; $419,259 ($419,259 broadcast + $0 CTV) &#8212; 524 airings &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D top" style="height:36.71897867469297%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Grandparent Endorsed</b> <span class="m">$419K</span></span>
+    </a><a class="vbar" data-side="R" data-b="419224" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/440c2b2b-516e-44dc-9a4a-36bd166d96f2.mp4" target="_blank" rel="noopener" title="Change &#8212; GLCF &#8212; $419,224 ($419,224 broadcast + $0 CTV) &#8212; 774 airings &#8212; Republican &#8212; attacks El-Sayed &#8212; click to play">
+      <span class="vplot"><span class="vseg R top" style="height:36.71598691645268%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Change</b> <span class="m">$419K</span></span>
+    </a><a class="vbar" data-side="D" data-b="201797" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/42268d85-81f7-43a5-8e1c-8afc584c8b55.mp4" target="_blank" rel="noopener" title="Glasses Off &#8212; El-Sayed for MI Senate &#8212; $201,797 ($201,797 broadcast + $0 CTV) &#8212; 282 airings &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D top" style="height:17.673532421940664%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Glasses Off</b> <span class="m">$202K</span></span>
+    </a><a class="vbar isnew" data-side="D" data-b="43516" data-c="0" data-new="1" href="https://pdfweb.s3.amazonaws.com/videos/899ed90a-4461-4c22-aff7-b8869a621680.mp4" target="_blank" rel="noopener" title="Michigan Kid &#8212; El-Sayed for MI Senate &#8212; $43,516 ($43,516 broadcast + $0 CTV) &#8212; 74 airings &#8212; Democratic &#8212; NEW &#8212; attacks Rogers &#8212; click to play">
+      <span class="vplot"><span class="vseg D top" style="height:3.8111750735671683%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Michigan Kid</b> <span class="m">$44K</span></span>
+    </a><a class="vbar" data-side="D" data-b="3678" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/3a42a57e-e9df-493b-9e14-2444df9fac1b.mp4" target="_blank" rel="noopener" title="Attacks And Lies &#8212; El-Sayed for MI Senate &#8212; $3,678 ($3,678 broadcast + $0 CTV) &#8212; 5 airings &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D top" style="height:0.32215963887095844%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Attacks And Lies</b> <span class="m">$4K</span></span>
+    </a><a class="vbar" data-side="D" data-b="2176" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/18544e83-2e5f-45dd-a87e-9feab23b1d40.mp4" target="_blank" rel="noopener" title="Grandparents &#8212; El-Sayed for MI Senate &#8212; $2,176 ($2,176 broadcast + $0 CTV) &#8212; 2 airings &#8212; Democratic &#8212; click to play">
+      <span class="vplot"><span class="vseg D top" style="height:0.19055555698117546%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Grandparents</b> <span class="m">$2K</span></span>
+    </a><a class="vbar" data-side="R" data-b="811" data-c="0" data-new="0" href="https://pdfweb.s3.amazonaws.com/videos/acb951a1-f8bf-404d-b6d2-32d66a7c4b55.mp4" target="_blank" rel="noopener" title="Builders &#8212; Rogers for MI Senate &#8212; $811 ($811 broadcast + $0 CTV) &#8212; 1 airings &#8212; Republican &#8212; click to play">
+      <span class="vplot"><span class="vseg R top" style="height:0.07100258556750427%"></span></span>
+      <span class="vnew"></span>
+      <span class="vlab"><b>Builders</b> <span class="m">$811</span></span>
+    </a></div></div></div>
+</section>
+
+<section>
+  <h2>Every ad, with its money and its markets <span class="tag">ranked by spend</span></h2>
+  <div class="adlist"><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/180b3740-ebe5-49c4-af9f-da0f738acc50.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Dangerously Radical<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv R">SLF PAC</span>
+      <span class="adamt num">$1.14M</span>
+    </span>
+    <span class="admeta">$1.14M broadcast &middot; CTV unavailable &middot; 588 airings &middot; broadcast only &middot; first aired 8/12</span>
+    <span class="mkline">Detroit, MI $696K &middot; Grand Rapids-Kalamazoo-Battle Creek, MI $315K &middot; Flint-Saginaw-Bay City, MI $131K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/1f10ad51-424c-4b68-a7c7-0d17e7288f9a.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Rigged<span class="badge att">attacks Rogers</span></span>
+      <span class="adv D">WinSenate</span>
+      <span class="adamt num">$829K</span>
+    </span>
+    <span class="admeta">$829K broadcast &middot; CTV unavailable &middot; 747 airings &middot; broadcast only &middot; first aired 8/19</span>
+    <span class="mkline">Detroit, MI $421K &middot; Grand Rapids-Kalamazoo-Battle Creek, MI $281K &middot; Flint-Saginaw-Bay City, MI $127K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/47209b07-0d42-4f85-bbc2-56ffe1047bd7.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Michigan Values</span>
+      <span class="adv R">NRSC/Rogers</span>
+      <span class="adamt num">$619K</span>
+    </span>
+    <span class="admeta">$619K broadcast &middot; CTV unavailable &middot; 887 airings &middot; broadcast only &middot; first aired 8/18</span>
+    <span class="mkline">Detroit, MI $300K &middot; Grand Rapids-Kalamazoo-Battle Creek, MI $198K &middot; Lansing, MI $51K &middot; Flint-Saginaw-Bay City, MI $41K &middot; Traverse City-Cadillac, MI $29K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/05cbcc80-65d0-46cc-abba-a1a196a67976.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Grandparent Endorsed</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$419K</span>
+    </span>
+    <span class="admeta">$419K broadcast &middot; CTV unavailable &middot; 524 airings &middot; broadcast only &middot; first aired 8/12</span>
+    <span class="mkline">Grand Rapids-Kalamazoo-Battle Creek, MI $176K &middot; Detroit, MI $154K &middot; Lansing, MI $56K &middot; Flint-Saginaw-Bay City, MI $33K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/440c2b2b-516e-44dc-9a4a-36bd166d96f2.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Change<span class="badge att">attacks El-Sayed</span></span>
+      <span class="adv R">GLCF</span>
+      <span class="adamt num">$419K</span>
+    </span>
+    <span class="admeta">$419K broadcast &middot; CTV unavailable &middot; 774 airings &middot; broadcast only &middot; first aired 8/20</span>
+    <span class="mkline">Grand Rapids-Kalamazoo-Battle Creek, MI $160K &middot; Lansing, MI $111K &middot; Flint-Saginaw-Bay City, MI $106K &middot; Traverse City-Cadillac, MI $41K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/42268d85-81f7-43a5-8e1c-8afc584c8b55.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Glasses Off</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$202K</span>
+    </span>
+    <span class="admeta">$202K broadcast &middot; CTV unavailable &middot; 282 airings &middot; broadcast only &middot; first aired 8/13</span>
+    <span class="mkline">Detroit, MI $202K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/899ed90a-4461-4c22-aff7-b8869a621680.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Michigan Kid<span class="badge new">NEW</span><span class="badge att">attacks Rogers</span></span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$44K</span>
+    </span>
+    <span class="admeta">$44K broadcast &middot; CTV unavailable &middot; 74 airings &middot; broadcast only &middot; first aired 8/26</span>
+    <span class="mkline">Grand Rapids-Kalamazoo-Battle Creek, MI $44K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/3a42a57e-e9df-493b-9e14-2444df9fac1b.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Attacks And Lies</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$4K</span>
+    </span>
+    <span class="admeta">$4K broadcast &middot; CTV unavailable &middot; 5 airings &middot; broadcast only &middot; first aired 7/25</span>
+    <span class="mkline">Lansing, MI $4K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/18544e83-2e5f-45dd-a87e-9feab23b1d40.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Grandparents</span>
+      <span class="adv D">El-Sayed for MI Senate</span>
+      <span class="adamt num">$2K</span>
+    </span>
+    <span class="admeta">$2K broadcast &middot; CTV unavailable &middot; 2 airings &middot; broadcast only &middot; first aired 7/15</span>
+    <span class="mkline">Grand Rapids-Kalamazoo-Battle Creek, MI $2K</span>
+    
+  </a><a class="adrow" href="https://pdfweb.s3.amazonaws.com/videos/acb951a1-f8bf-404d-b6d2-32d66a7c4b55.mp4" target="_blank" rel="noopener" title="Click to play the ad">
+    <span class="adtop">
+      <span class="adname">Builders</span>
+      <span class="adv R">Rogers for MI Senate</span>
+      <span class="adamt num">$811</span>
+    </span>
+    <span class="admeta">$811 broadcast &middot; CTV unavailable &middot; 1 airings &middot; broadcast only &middot; first aired 8/12</span>
+    <span class="mkline">Detroit, MI $811</span>
+    
+  </a></div>
+</section>
+
+<section>
+  <h2>Where the money is going <span class="tag">top 5 of 5 markets</span></h2>
+  <p class="lede">Every market any of these ads is running in, ranked by total spend across all advertisers.</p>
+  <table class="mktable">
+    <thead><tr><th>Market</th><th class="n">Broadcast</th><th class="n">CTV</th><th class="n">Airings</th><th class="n">Ads</th></tr></thead>
+    <tbody><tr>
+      <td>Detroit, MI</td>
+      <td class="n">$1.77M</td>
+      <td class="n">&mdash;</td>
+      <td class="n">1,066</td>
+      <td class="n">6</td>
+    </tr><tr>
+      <td>Grand Rapids-Kalamazoo-Battle Creek, MI</td>
+      <td class="n">$1.18M</td>
+      <td class="n">&mdash;</td>
+      <td class="n">1,544</td>
+      <td class="n">7</td>
+    </tr><tr>
+      <td>Flint-Saginaw-Bay City, MI</td>
+      <td class="n">$439K</td>
+      <td class="n">&mdash;</td>
+      <td class="n">552</td>
+      <td class="n">5</td>
+    </tr><tr>
+      <td>Lansing, MI</td>
+      <td class="n">$222K</td>
+      <td class="n">&mdash;</td>
+      <td class="n">461</td>
+      <td class="n">4</td>
+    </tr><tr>
+      <td>Traverse City-Cadillac, MI</td>
+      <td class="n">$70K</td>
+      <td class="n">&mdash;</td>
+      <td class="n">261</td>
+      <td class="n">2</td>
+    </tr></tbody>
+  </table>
+</section>
+
+<section class="keep">
+  <h2>Source</h2>
+  <div class="warnbox">
+    <p><b>Where these numbers come from.</b> AdMo+ per-creative analysis, pulled 2026-08-27 12:29 UTC for 8/21&#8211;8/27. 10 television creatives out of 19 in the race feed; digital-only creatives are excluded by design.</p>
+    <p>Spend is summed from each ad&rsquo;s per-market figures, which are windowed. Broadcast (<code>NOT_DIGITAL</code>) excludes CTV, so the two never double-count.</p>
+    <p><b>CTV unavailable.</b> AdMo returned an empty <code>ctvMarkets</code> list for every creative in this pull, and for past windows that previously reported CTV spend. The key is present and empty, so this is missing data rather than a renamed field. CTV columns read &ldquo;unavailable&rdquo; rather than $0 for that reason.</p>
+    
+  </div>
+</section>
+
+<footer>
+  <p>Generated by <code>scripts/onair-report.js</code> from an AdMo+ pull. Read-only: it writes a report, never campaign data.</p>
+  <p>Video links resolve to <code>pdfweb.s3.amazonaws.com/videos/&lt;uuid&gt;.mp4</code>.</p>
+</footer></article>
+<article class="day" data-date="2026-08-22" hidden><style>
 .adlist{background:var(--surface);border:1px solid var(--line);padding:10px 14px;display:flex;flex-direction:column;gap:12px}
 .adrow{display:block;text-decoration:none;color:inherit;padding-bottom:11px;border-bottom:1px solid var(--line-soft)}
 .adlist .adrow:last-child{border-bottom:none;padding-bottom:0}
